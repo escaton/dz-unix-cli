@@ -53,14 +53,25 @@ fi
 
 if [ $GIT ]
 then
+	# didn't find simple way to save output that contains \0 into variable correctly
+	# so decide to use base64:
 	FILELIST=`git ls-files -oz --exclude-standard 2>/dev/null | base64`
 	echo $FILELIST | base64 -d | xargs -0 -I {} cp --parent {} ~/.Trash/
 	echo $FILELIST | base64 -d | xargs -0 -I {} rm {}
+
+	# another way. Not shure if it is faster to call "git ls-files" twice
+	# git ls-files -oz --exclude-standard 2>/dev/null | xargs -0 -I {} cp --parent {} ~/.Trash/
+	# git ls-files -oz --exclude-standard 2>/dev/null | xargs -0 -I {} rm {}
 elif [ $SVN ]
 then 
-	FILELIST=`svn st | grep ? | awk '{print $2}'`
+	FILELIST=`svn st 2>/dev/null | grep ? | awk '{print $2}'`
 	echo $FILELIST | xargs -I {} cp --parent {} ~/.Trash/
 	echo $FILELIST | xargs -I {} rm {}
+
+	# again as previously with git, another way. Here is no encoding/decoding, because there is no option in "svn st"
+	# but two calls "grep" and "awk", so again not shure if it is faster:
+	# svn st 2>/dev/null | grep ? | awk '{print $2}' | xargs -I {} cp --parent {} ~/.Trash/
+	# svn st 2>/dev/null | grep ? | awk '{print $2}' | xargs -I {} rm {}
 else
 	echo "Missed repository type parameter"
 fi
