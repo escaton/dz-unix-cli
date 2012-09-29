@@ -68,7 +68,7 @@ then
 	echo $FILELIST | xargs -I {} cp --parent {} ~/.Trash/
 	echo $FILELIST | xargs -I {} rm {}
 
-	# again as previously with git, another way. Here is no encoding/decoding, because there is no option in "svn st"
+	# again as previously with git, another way. Here is no encoding/decoding, because there is no option in "svn st" like git's "-z"
 	# but two calls "grep" and "awk", so again not shure if it is faster:
 	# svn st 2>/dev/null | grep ? | awk '{print $2}' | xargs -I {} cp --parent {} ~/.Trash/
 	# svn st 2>/dev/null | grep ? | awk '{print $2}' | xargs -I {} rm {}
